@@ -46,7 +46,17 @@ export function DashboardOverview() {
           <div className="text-center">
             <AlertCircle className="w-12 h-12 text-red-500 mx-auto mb-4" />
             <p className="text-red-600">Failed to load dashboard data</p>
-            <p className="text-sm text-muted mt-2">Please try again later</p>
+            <p className="text-sm text-muted mt-2">
+              {error?.message || 'Please check your connection and try again'}
+            </p>
+            <Button
+              onClick={() => window.location.reload()}
+              variant="outline"
+              className="mt-4"
+            >
+              <RefreshCw className="w-4 h-4 mr-2" />
+              Retry
+            </Button>
           </div>
         </div>
       </div>

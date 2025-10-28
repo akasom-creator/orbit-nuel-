@@ -13,6 +13,7 @@ import {
 import { NotificationsService } from './notifications.service';
 import { CreateNotificationDto } from './dto/create-notification.dto';
 import { UpdateNotificationPreferenceDto } from './dto/update-notification-preference.dto';
+import { NotificationChannel } from './entities/notification-preference.entity';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 
 @Controller('notifications')
@@ -69,9 +70,9 @@ export class NotificationsController {
   ) {
     return this.notificationsService.updatePreference(
       req.user.userId,
-      updatePreferenceDto.channel || 'email',
+      updatePreferenceDto.channel || NotificationChannel.EMAIL,
       updatePreferenceDto.notificationType || 'general',
-      updatePreferenceDto.enabled || false,
+      updatePreferenceDto.enabled ?? false,
       updatePreferenceDto.frequency,
     );
   }

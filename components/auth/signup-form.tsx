@@ -35,7 +35,7 @@ export function SignupForm() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     if (formData.password !== formData.confirmPassword) {
-      authToasts.error('Passwords do not match. Please try again.')
+      authToasts.signupError('Passwords do not match. Please try again.')
       return
     }
     setIsLoading(true)
@@ -67,7 +67,7 @@ export function SignupForm() {
         } else if (response.status >= 500) {
           authToasts.serverError()
         } else {
-          authToasts.signupError(data.message)
+          authToasts.signupError(data?.message)
         }
       }
     } catch (error) {

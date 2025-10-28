@@ -62,6 +62,13 @@ export function SettingsView() {
     description: "Leading technology company focused on digital transformation for African businesses.",
   });
 
+  const [security, setSecurity] = useState({
+    twoFactorEnabled: false,
+    allowTeamInvites: true,
+    requireAdminApproval: false,
+    allowExternalSharing: true,
+  });
+
   // Update local state when settings are loaded
   useEffect(() => {
     if (settings) {
@@ -77,6 +84,12 @@ export function SettingsView() {
         industry: settings.companyIndustry || "Technology",
         size: settings.companySize || "11-50 employees",
         description: settings.companyDescription || "",
+      });
+      setSecurity({
+        twoFactorEnabled: settings.twoFactorEnabled,
+        allowTeamInvites: settings.allowTeamInvites,
+        requireAdminApproval: settings.requireAdminApproval,
+        allowExternalSharing: settings.allowExternalSharing,
       });
       setProfile(prev => ({
         ...prev,
@@ -590,21 +603,37 @@ export function SettingsView() {
                       Add an extra layer of security to your account
                     </p>
                   </div>
-                  <Button variant="outline" size="sm">
-                    <Key className="w-4 h-4 mr-2" />
-                    Enable 2FA
-                  </Button>
+                  <Switch
+                    checked={security.twoFactorEnabled}
+                    onCheckedChange={(checked) =>
+                      setSecurity({ ...security, twoFactorEnabled: checked })
+                    }
+                  />
                 </div>
               </div>
 
-              <div className="flex justify-between">
-                <Button variant="destructive" size="sm">
-                  <Trash2 className="w-4 h-4 mr-2" />
-                  Delete Account
-                </Button>
-                <Button className="bg-secondary hover:bg-secondary/90">
-                  <Save className="w-4 h-4 mr-2" />
-                  Update Password
+              <div className="flex justify-end">
+                <Button
+                  className="bg-secondary hover:bg-secondary/90"
+                  onClick={async () => {
+                    try {
+                      await updateSettingsMutation.mutateAsync({
+                        twoFactorEnabled: security.twoFactorEnabled,
+                      });
+                      showToast.success("Security settings updated successfully");
+                    } catch (error) {
+                      console.error("Security settings update failed:", error);
+                      showToast.error("Failed to update security settings");
+                    }
+                  }}
+                  disabled={updateSettingsMutation.isPending}
+                >
+                  {updateSettingsMutation.isPending ? (
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  ) : (
+                    <Save className="w-4 h-4 mr-2" />
+                  )}
+                  Save Settings
                 </Button>
               </div>
             </CardContent>
@@ -677,7 +706,12 @@ export function SettingsView() {
                       Team members can send invitations to new users
                     </p>
                   </div>
-                  <Switch defaultChecked />
+                  <Switch
+                    checked={security.allowTeamInvites}
+                    onCheckedChange={(checked) =>
+                      setSecurity({ ...security, allowTeamInvites: checked })
+                    }
+                  />
                 </div>
                 <div className="flex items-center justify-between">
                   <div className="space-y-0.5">
@@ -686,7 +720,12 @@ export function SettingsView() {
                       New team members need admin approval before joining
                     </p>
                   </div>
-                  <Switch />
+                  <Switch
+                    checked={security.requireAdminApproval}
+                    onCheckedChange={(checked) =>
+                      setSecurity({ ...security, requireAdminApproval: checked })
+                    }
+                  />
                 </div>
                 <div className="flex items-center justify-between">
                   <div className="space-y-0.5">
@@ -696,7 +735,12 @@ export function SettingsView() {
                       workspace
                     </p>
                   </div>
-                  <Switch defaultChecked />
+                  <Switch
+                    checked={security.allowExternalSharing}
+                    onCheckedChange={(checked) =>
+                      setSecurity({ ...security, allowExternalSharing: checked })
+                    }
+                  />
                 </div>
               </div>
 
@@ -706,9 +750,9 @@ export function SettingsView() {
                   onClick={async () => {
                     try {
                       await updateSettingsMutation.mutateAsync({
-                        allowTeamInvites: true, // Default values for now
-                        requireAdminApproval: false,
-                        allowExternalSharing: true,
+                        allowTeamInvites: security.allowTeamInvites,
+                        requireAdminApproval: security.requireAdminApproval,
+                        allowExternalSharing: security.allowExternalSharing,
                       });
                       showToast.success("Team settings updated successfully");
                     } catch (error) {

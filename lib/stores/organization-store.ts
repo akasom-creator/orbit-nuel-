@@ -16,7 +16,7 @@ export const useOrganizationStore = create<OrganizationState>()(
     }),
     {
       name: 'organization-storage',
-      partialize: (state) => ({ organizationId: state.organizationId }),
-    }
+      partialize: (state: any) => ({ organizationId: state.organizationId }),
+    } as any
   )
 );

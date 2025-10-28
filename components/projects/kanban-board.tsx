@@ -19,7 +19,7 @@ import {
 } from "@/components/ui/dialog"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Plus, MoreHorizontal, Calendar, MessageSquare, Paperclip, Flag, ArrowLeft, Filter, Search, AlertCircle } from "lucide-react"
+import { Plus, MoreHorizontal, Calendar, MessageSquare, Paperclip, Flag, ArrowLeft, Filter, Search, AlertCircle, RefreshCw } from "lucide-react"
 import { useTasks } from "@/lib/queries/tasks"
 
 const columns = [
@@ -94,7 +94,17 @@ export function KanbanBoard({ projectId }: KanbanBoardProps) {
           <div className="text-center">
             <AlertCircle className="w-12 h-12 text-red-500 mx-auto mb-4" />
             <p className="text-red-600">Failed to load tasks</p>
-            <p className="text-sm text-muted mt-2">Please try again later</p>
+            <p className="text-sm text-muted mt-2">
+              {error?.message || 'Please check your connection and try again'}
+            </p>
+            <Button
+              onClick={() => window.location.reload()}
+              variant="outline"
+              className="mt-4"
+            >
+              <RefreshCw className="w-4 h-4 mr-2" />
+              Retry
+            </Button>
           </div>
         </div>
       </div>
